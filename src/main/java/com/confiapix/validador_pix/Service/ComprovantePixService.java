@@ -1,5 +1,6 @@
 package com.confiapix.validador_pix.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ public class ComprovantePixService {
 
     // Criar ou salvar comprovante
     public ComprovantePix save(ComprovantePix comprovantePix) {
+        comprovantePix.setDataEnvio(LocalDateTime.now());
         return comprovantePixRepository.save(comprovantePix);
     }
 
@@ -39,7 +41,6 @@ public class ComprovantePixService {
     public Optional<ComprovantePix> update(Long id, ComprovantePix dadosAtualizados) {
         return comprovantePixRepository.findById(id).map(existente -> {
             existente.setValor(dadosAtualizados.getValor());
-            existente.setResultadoValidacao(dadosAtualizados.getResultadoValidacao());
             existente.setDataHora(dadosAtualizados.getDataHora());
             existente.setNomePagador(dadosAtualizados.getNomePagador());
             existente.setNomeRecebedor(dadosAtualizados.getNomeRecebedor());
@@ -56,7 +57,7 @@ public class ComprovantePixService {
         return false;
     }
 
-    // Validação fictícia — cruzamento de dados (simulação futura com Open Finance)
+     // Validação fictícia — cruzamento de dados (simulação futura com Open Finance)
     public String validarComprovante(ComprovantePix comprovante) {
         // Aqui futuramente entrará o OCR + verificação com Open Finance
         if (comprovante.getValor() != null && comprovante.getValor().compareTo(new java.math.BigDecimal("0")) > 0) {
@@ -68,4 +69,6 @@ public class ComprovantePixService {
         comprovantePixRepository.save(comprovante);
         return comprovante.getResultadoValidacao();
     }
+
+
 }

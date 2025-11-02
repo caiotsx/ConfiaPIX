@@ -66,7 +66,7 @@ public class ComprovantePixController {
         return ResponseEntity.notFound().build();
     }
 
-    // ✅ VALIDAR COMPROVANTE (POST /validar)
+     // ✅ VALIDAR COMPROVANTE (POST /validar)
     @PostMapping("/validar")
     public ResponseEntity<String> validarComprovante(@RequestBody ComprovantePix comprovante) {
         String resultado = comprovantePixService.validarComprovante(comprovante);

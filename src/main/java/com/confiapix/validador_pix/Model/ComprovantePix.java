@@ -16,43 +16,45 @@ public class ComprovantePix {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idComprovante", nullable = true)
+    @Column(name = "idcomprovante", nullable = true)
     private Long idComprovante;
 
-    @Column(name = "txId", nullable = true)
+    @Column(name = "txid", nullable = true)
     private String txId;
 
-    @Column(name = "nomePagador", nullable = true)
+    @Column(name = "nomepagador", nullable = true)
     private String nomePagador;
 
-    @Column(name = "nomeRecebedor", nullable = true)
+    @Column(name = "nomerecebedor", nullable = true)
     private String nomeRecebedor;
 
     @Column(name = "valor", nullable = true)
     private BigDecimal valor;
 
-    @Column(name = "dataHora", nullable = true)
+    @Column(name = "datahora", nullable = true)
     private LocalDateTime dataHora;
 
-    @Column(name = "nomeArquivo", nullable = true)
+    @Column(name = "nomearquivo", nullable = true)
     private String nomeArquivo;
 
-    @Column(name = "tipoArquivo", nullable = true)
+    @Column(name = "tipoarquivo", nullable = true)
     private String tipoArquivo;
 
-    @Column(name = "dataEnvio", nullable = true)
+    @Column(name = "dataenvio", nullable = true)
     private LocalDateTime dataEnvio;
 
-    @Column(name = "resultadoValidacao", nullable = true)
+    @Column(name = "resultadovalidacao", nullable = true)
     private String resultadoValidacao;
+
+
 
     // Construtores
     public ComprovantePix() {
     }
 
     public ComprovantePix(Long idComprovante, String txId, String nomePagador, String nomeRecebedor, BigDecimal valor,
-            LocalDateTime dataHora, String nomeArquivo, String tipoArquivo,
-        LocalDateTime dataEnvio, String resultadoValidacao) {
+        LocalDateTime dataHora, String nomeArquivo, String tipoArquivo, LocalDateTime dataEnvio,
+        String resultadoValidacao) {
         this.idComprovante = idComprovante;
         this.txId = txId;
         this.nomePagador = nomePagador;
@@ -114,7 +116,6 @@ public class ComprovantePix {
         this.dataHora = dataHora;
     }
 
-
     public String getNomeArquivo() {
         return nomeArquivo;
     }
@@ -146,5 +147,7 @@ public class ComprovantePix {
     public void setResultadoValidacao(String resultadoValidacao) {
         this.resultadoValidacao = resultadoValidacao;
     }
+
+    
 
 }
