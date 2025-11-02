@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ConfiaPIX - Login / Cadastro</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #00bcd4, #0097a7);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      padding: 2rem 2.5rem;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      color: #00bcd4;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem; 
+    }
+
+    input {
+      padding: 0.8rem 1rem;
+      border: 1.5px solid #ccc;
+      border-radius: 10px;
+      font-size: 1rem;
+      width: 100%;
+      transition: 0.2s;
+    }
+
+    input:focus {
+      border-color: #00bcd4;
+      outline: none;
+      box-shadow: 0 0 6px rgba(0, 188, 212, 0.3);
+    }
+
+    input[type="file"] {
+      border: 1.5px dashed #bbb;
+      cursor: pointer;
+      padding: 0.9rem;
+      background-color: #fafafa;
+    }
+
+    button {
+      background-color: #00bcd4;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: background 0.2s;
+      margin-top: 0.5rem;
+    }
+
+    button:hover {
+      background-color: #0097a7;
+    }
+
+    .msg {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .msg a {
+      color: #00bcd4;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .msg a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 1.8rem 1.2rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      input, button {
+        font-size: 0.95rem;
+        padding: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>ConfiaPIX</h1>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Nome de usuário" required />
+      <input type="password" id="password" placeholder="Senha" required />
+      <input type="file" id="photo" accept="image/*" required />
+      <button type="submit">Entrar / Cadastrar</button>
+    </form>
+    <div class="msg">
+      <p>Após o login, você será redirecionado para a tela principal.</p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const photoFile = document.getElementById('photo').files[0];
+
+      if (!username || !password || !photoFile) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const userData = {
+          username: username,
+          password: password,
+          photo: event.target.result
+        };
+        localStorage.setItem('confiaPIX_user', JSON.stringify(userData));
+        window.location.href = 'index.html';
+      };
+      reader.readAsDataURL(photoFile);
+    });
+  </script>
+</body>
+</html>
