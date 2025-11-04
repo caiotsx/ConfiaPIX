@@ -70,5 +70,4 @@ public class ComprovantePixService {
         return comprovante.getResultadoValidacao();
     }
 
-
 }
