@@ -5,7 +5,7 @@
 
 body {
     margin: 0;
-    background: linear-gradient(135deg, #00bcd4, #0097a7);
+    background: linear-gradient(100deg, #00bcd4, #0097a7);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -172,7 +172,7 @@ main {
 
 /* ===== Tema escuro ===== */
 .dark-mode {
-    background: linear-gradient(135deg, #121212, #1e1e1e);
+    background: linear-gradient(100deg, #121212, #1e1e1e);
     color: #e0e0e0;
 }
 
@@ -196,7 +196,7 @@ main {
 }
 
 .dark-mode .btn-validate {
-    background-color: #00796b;
+    background-color: #00bcd4;
 }
 
 .dark-mode .logo span {
