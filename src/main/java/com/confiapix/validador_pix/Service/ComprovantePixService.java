@@ -1,20 +1,42 @@
 package com.confiapix.validador_pix.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.confiapix.validador_pix.Model.ComprovantePix;
+import com.confiapix.validador_pix.Model.TransacaoPix;
 import com.confiapix.validador_pix.Repository.ComprovantePixRepository;
+import com.confiapix.validador_pix.Repository.TransacaoPixRepository;
+import com.confiapix.validador_pix.Utils.DataHoraUtils;
 
 @Service
 public class ComprovantePixService {
 
-    @Autowired
-    private ComprovantePixRepository comprovantePixRepository;
+    private final ComprovantePixRepository comprovantePixRepository;
+    private final TransacaoPixRepository transacaoPixRepository;
+
+    public ComprovantePixService(
+            ComprovantePixRepository comprovantePixRepository,
+            TransacaoPixRepository transacaoPixRepository) {
+
+        this.comprovantePixRepository = comprovantePixRepository;
+        this.transacaoPixRepository = transacaoPixRepository;
+    }
+
+    private BigDecimal normalizarValor(String valorStr) {
+        if (valorStr == null)
+            return null;
+
+        // Remove separador de milhar e troca vírgula por ponto
+        valorStr = valorStr.replace(".", "").replace(",", ".");
+
+        return new BigDecimal(valorStr);
+    }
 
     // Criar ou salvar comprovante
     public ComprovantePix save(ComprovantePix comprovantePix) {
@@ -57,17 +79,41 @@ public class ComprovantePixService {
         return false;
     }
 
-     // Validação fictícia — cruzamento de dados (simulação futura com Open Finance)
-    public String validarComprovante(ComprovantePix comprovante) {
-        // Aqui futuramente entrará o OCR + verificação com Open Finance
-        if (comprovante.getValor() != null && comprovante.getValor().compareTo(new java.math.BigDecimal("0")) > 0) {
-            comprovante.setResultadoValidacao("Comprovante válido e confirmado.");
-        } else {
-            comprovante.setResultadoValidacao("Comprovante inválido ou suspeito.");
+    // Validação
+    public Map<String, Object> validar(Map<String, String> dadosOcr) {
+
+        String txid = dadosOcr.get("txId");
+
+        Optional<TransacaoPix> transacaoOpt = transacaoPixRepository.findByTxId(txid);
+
+        if (transacaoOpt.isEmpty()) {
+            return Map.of(
+                    "valido", false,
+                    "motivo", "Transação não encontrada na base oficial.");
         }
 
-        comprovantePixRepository.save(comprovante);
-        return comprovante.getResultadoValidacao();
+        TransacaoPix oficial = transacaoOpt.get();
+
+        boolean pagadorOK = comparar(oficial.getPagador(), dadosOcr.get("nomePagador"));
+        boolean recebedorOK = comparar(oficial.getRecebedor(), dadosOcr.get("nomeRecebedor"));
+        BigDecimal valorOcr = normalizarValor(dadosOcr.get("valor"));
+        boolean valorOK = oficial.getValor().compareTo(valorOcr) == 0;
+
+        boolean dataOK = oficial.getDatahora().equals(DataHoraUtils.parseDataHora(dadosOcr.get("dataHora")));
+
+        boolean tudoOK = pagadorOK && recebedorOK && valorOK && dataOK;
+
+        return Map.of(
+                "valido", tudoOK,
+                "campos", Map.of(
+                        "nomePagador", pagadorOK,
+                        "nomeRecebedor", recebedorOK,
+                        "valor", valorOK,
+                        "dataHora", dataOK));
+    }
+
+    private boolean comparar(String a, String b) {
+        return a != null && b != null && a.equalsIgnoreCase(b);
     }
 
 }
