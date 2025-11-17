@@ -34,7 +34,6 @@ public class OcrService {
         try (PDDocument document = PDDocument.load(pdfFile)) {
             PDFRenderer pdfRenderer = new PDFRenderer(document);
             Tesseract tesseract = new Tesseract();
-            tesseract.setDatapath("C:\\Program Files\\Tesseract-OCR\\tessdata");
             tesseract.setLanguage("por");
 
             int totalPages = document.getNumberOfPages();
