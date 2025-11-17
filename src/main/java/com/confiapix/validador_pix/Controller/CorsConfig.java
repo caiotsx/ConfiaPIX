@@ -12,7 +12,7 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                     "https://produtos-frontend-o38v.onrender.com",
-                    "http://localhost:8081",
+                    "http://localhost:8080",
                     "http://localhost:3000"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")

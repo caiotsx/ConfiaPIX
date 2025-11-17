@@ -1,10 +1,11 @@
 package com.confiapix.validador_pix.Parser;
 
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.confiapix.validador_pix.Utils.DataHoraUtils;
 
 public class ItauParser implements ComprovanteParser {
 
@@ -22,14 +23,19 @@ public class ItauParser implements ComprovanteParser {
         dados.put("nomeRecebedor", extrairRegex(textoOCR, "(?i)Para\\s*\\n([A-ZÀ-Ú\\s]+)(?=\\nCPF)"));
         dados.put("valor", extrairRegex(textoOCR, "(?i)R\\$\\s*([\\d.,]+)"));
 
-        // Combina data e hora
-        String data = extrairRegex(textoOCR, "(?i)realizado\\s*em\\s*(\\d{2}/\\d{2}/\\d{4})");
-        String hora = extrairRegex(textoOCR, "(?i)[àas]*\\s*(\\d{2}:\\d{2}:\\d{2})");
-        dados.put("dataHora", (data != null && hora != null) ? data + " " + hora : null);
+        // Regex único para data + hora
+        String dataHoraBr = extrairRegex(
+            textoOCR,
+            "(?i)realizado\\s*em\\s*(\\d{2}/\\d{2}/\\d{4}\\s*[àas]*\\s*\\d{2}:\\d{2}:\\d{2})"
+        );
+
+        dados.put("dataHora", DataHoraUtils.converterParaISO(dataHoraBr));
 
         dados.put("banco", "Itaú");
+
         return dados;
     }
+
 
     private String extrairRegex(String texto, String regex) {
         Pattern pattern = Pattern.compile(regex);
@@ -39,4 +45,5 @@ public class ItauParser implements ComprovanteParser {
         }
         return null;
     }
+
 }

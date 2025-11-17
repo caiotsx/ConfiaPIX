@@ -77,7 +77,7 @@ public class ComprovantePixController {
 
 
     // 🆕 OCR: FAZER UPLOAD E EXTRAIR DADOS AUTOMATICAMENTE
-@PostMapping("/upload")
+@PostMapping("/validar")
 public ResponseEntity<?> uploadComprovante(@RequestParam("arquivo") MultipartFile arquivo) {
     try {
         // 1️⃣ Verificar tipo MIME

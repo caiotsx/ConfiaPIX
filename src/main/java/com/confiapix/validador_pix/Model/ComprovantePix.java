@@ -34,6 +34,7 @@ public class ComprovantePix {
     @Column(name = "datahora", nullable = true)
     private LocalDateTime dataHora;
 
+    
     @Column(name = "nomearquivo", nullable = true)
     private String nomeArquivo;
 

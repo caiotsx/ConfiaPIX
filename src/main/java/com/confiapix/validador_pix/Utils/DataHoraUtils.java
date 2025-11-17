@@ -27,52 +27,72 @@ public class DataHoraUtils {
     }
 
     private static final DateTimeFormatter[] FORMATTERS = {
-        DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"),
-        DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"),
-        DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"),
-        DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"),
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"),
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"),
+            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"),
+            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"),
 
-        DateTimeFormatter.ISO_LOCAL_DATE_TIME,
-        DateTimeFormatter.ISO_OFFSET_DATE_TIME,
+            DateTimeFormatter.ISO_LOCAL_DATE_TIME,
+            DateTimeFormatter.ISO_OFFSET_DATE_TIME,
 
-        DateTimeFormatter.ofPattern("dd MM yyyy HH:mm:ss"),
-        DateTimeFormatter.ofPattern("dd MM yyyy HH:mm")
+            DateTimeFormatter.ofPattern("dd MM yyyy HH:mm:ss"),
+            DateTimeFormatter.ofPattern("dd MM yyyy HH:mm")
     };
+
+    public static String converterParaISO(String dataHoraBr) {
+        if (dataHoraBr == null)
+            return null;
+
+        // Remove "às", "as", variações
+        String normalizado = dataHoraBr.replaceAll("(?i)às|as|às", "").trim();
+
+        // Normaliza múltiplos espaços para apenas um
+        normalizado = normalizado.replaceAll("\\s+", " ");
+
+        // Agora o texto sempre terá um único espaço entre data e hora
+        DateTimeFormatter formatoBr = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+        LocalDateTime dt = LocalDateTime.parse(normalizado, formatoBr);
+
+        return dt.toString(); // ISO 8601
+    }
 
     public static LocalDateTime parseDataHora(String raw) {
 
-    if (raw == null || raw.isBlank()) return null;
+        if (raw == null || raw.isBlank())
+            return null;
 
-    String t = raw.trim().toUpperCase();
+        String t = raw.trim().toUpperCase();
 
-    // 🔥 Se for ISO, não mexe! Retorna na hora
-    if (t.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*")) {
-        try {
-            return OffsetDateTime.parse(t).toLocalDateTime();
-        } catch (Exception e1) {
-            return LocalDateTime.parse(t); // fallback
+        // 🔥 Se for ISO, não mexe! Retorna na hora
+        if (t.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*")) {
+            try {
+                return OffsetDateTime.parse(t).toLocalDateTime();
+            } catch (Exception e1) {
+                return LocalDateTime.parse(t); // fallback
+            }
         }
-    }
 
-    // 🔧 Agora sim pode normalizar para os formatos BR
-    t = t.replace(" - ", " ")
-         .replaceAll("\\s+", " ");
+        // 🔧 Agora sim pode normalizar para os formatos BR
+        t = t.replace(" - ", " ")
+                .replaceAll("\\s+", " ");
 
-    // 🔥 Converte meses PT-BR (JAN, FEV, OUT etc.)
-    for (var entry : MESES.entrySet()) {
-        String m = entry.getKey();
-        if (t.contains(" " + m + " ")) {
-            t = t.replace(" " + m + " ", " " + entry.getValue() + " ");
+        // 🔥 Converte meses PT-BR (JAN, FEV, OUT etc.)
+        for (var entry : MESES.entrySet()) {
+            String m = entry.getKey();
+            if (t.contains(" " + m + " ")) {
+                t = t.replace(" " + m + " ", " " + entry.getValue() + " ");
+            }
         }
-    }
 
-    // Tenta formatadores
-    for (DateTimeFormatter f : FORMATTERS) {
-        try {
-            return LocalDateTime.parse(t, f);
-        } catch (Exception ignored) {}
-    }
+        // Tenta formatadores
+        for (DateTimeFormatter f : FORMATTERS) {
+            try {
+                return LocalDateTime.parse(t, f);
+            } catch (Exception ignored) {
+            }
+        }
 
-    throw new DateTimeException("Formato não reconhecido: " + raw);
-}
+        throw new DateTimeException("Formato não reconhecido: " + raw);
+    }
 }
