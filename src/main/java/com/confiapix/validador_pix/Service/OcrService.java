@@ -19,7 +19,6 @@ public class OcrService {
     public String extrairTexto(File imagem) {
 
         Tesseract tesseract = new Tesseract();
-        tesseract.setDatapath("C:\\Program Files\\Tesseract-OCR\\tessdata"); // ajuste conforme sua instalação
         tesseract.setLanguage("por");
 
         try {

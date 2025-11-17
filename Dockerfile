@@ -1,25 +1,26 @@
-# Etapa 1: Build com JDK 21
+# Etapa 1: build do backend
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 COPY . .
-RUN mvn clean package -DskipTests
+RUN mvn -e -X clean package -DskipTests
 
+# Etapa 2: runtime
+FROM eclipse-temurin:21-jdk
 
-# Etapa 2: Runtime (Ubuntu, NÃO use Alpine)
-FROM ubuntu:22.04
+# Instala Tesseract + pacotes de idiomas
+RUN apt-get update && apt-get install -y tesseract-ocr tesseract-ocr-por tesseract-ocr-eng
 
-# Instala o Java + Tesseract + Leptonica
-RUN apt-get update && apt-get install -y \
-    openjdk-21-jre \
-    tesseract-ocr \
-    libtesseract-dev \
-    liblept5 \
-    && rm -rf /var/lib/apt/lists/*
+# Cria diretório para tessdata (Linux)
+RUN mkdir -p /usr/share/tesseract-ocr/4.00/tessdata
 
-WORKDIR /app
-
-COPY --from=build /app/target/*.jar app.jar
-
+# Expõe a porta usada
 EXPOSE 8081
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Define o TESSDATA_PREFIX
+ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata
+
+# Copia o app construído
+COPY --from=build /app/target/*.jar /app/app.jar
+
+# Inicia o Spring Boot
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
