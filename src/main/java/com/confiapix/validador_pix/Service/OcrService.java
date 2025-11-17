@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import net.sourceforge.tess4j.Tesseract;
@@ -16,9 +17,13 @@ import net.sourceforge.tess4j.TesseractException;
 @Service
 public class OcrService {
 
-    public String extrairTexto(File imagem) {
+    public String extrairTexto(File imagem) throws IOException {
 
         Tesseract tesseract = new Tesseract();
+
+        ClassPathResource tessData = new ClassPathResource("tessdata");
+        tesseract.setDatapath(tessData.getFile().getAbsolutePath());
+
         tesseract.setLanguage("por");
 
         try {
