@@ -34,7 +34,6 @@ public class ComprovantePix {
     @Column(name = "datahora", nullable = true)
     private LocalDateTime dataHora;
 
-    
     @Column(name = "nomearquivo", nullable = true)
     private String nomeArquivo;
 
@@ -47,15 +46,12 @@ public class ComprovantePix {
     @Column(name = "resultadovalidacao", nullable = true)
     private String resultadoValidacao;
 
-
-
-    // Construtores
     public ComprovantePix() {
     }
 
     public ComprovantePix(Long idComprovante, String txId, String nomePagador, String nomeRecebedor, BigDecimal valor,
-        LocalDateTime dataHora, String nomeArquivo, String tipoArquivo, LocalDateTime dataEnvio,
-        String resultadoValidacao) {
+            LocalDateTime dataHora, String nomeArquivo, String tipoArquivo, LocalDateTime dataEnvio,
+            String resultadoValidacao) {
         this.idComprovante = idComprovante;
         this.txId = txId;
         this.nomePagador = nomePagador;
@@ -68,7 +64,6 @@ public class ComprovantePix {
         this.resultadoValidacao = resultadoValidacao;
     }
 
-    // Getters & Setters
     public Long getIdComprovante() {
         return idComprovante;
     }
@@ -148,7 +143,5 @@ public class ComprovantePix {
     public void setResultadoValidacao(String resultadoValidacao) {
         this.resultadoValidacao = resultadoValidacao;
     }
-
-    
 
 }

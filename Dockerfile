@@ -8,19 +8,22 @@ RUN mvn -e -X clean package -DskipTests
 FROM eclipse-temurin:21-jdk
 
 # Instala Tesseract + pacotes de idiomas
-RUN apt-get update && apt-get install -y tesseract-ocr tesseract-ocr-por tesseract-ocr-eng
+RUN apt-get update && apt-get install -y \
+    tesseract-ocr \
+    tesseract-ocr-por \
+    tesseract-ocr-eng \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Cria diretório para tessdata (Linux)
-RUN mkdir -p /usr/share/tesseract-ocr/4.00/tessdata
+# NÃO recrie o diretório tessdata — ele já existe!
 
-# Expõe a porta usada
-EXPOSE 8081
-
-# Define o TESSDATA_PREFIX
+# Defina TESSDATA_PREFIX corretamente
 ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata
 
-# Copia o app construído
+# Expor porta
+EXPOSE 8081
+
+# Copiar aplicação
 COPY --from=build /app/target/*.jar /app/app.jar
 
-# Inicia o Spring Boot
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

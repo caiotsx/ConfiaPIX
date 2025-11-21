@@ -32,34 +32,28 @@ public class ComprovantePixService {
         if (valorStr == null)
             return null;
 
-        // Remove separador de milhar e troca vírgula por ponto
         valorStr = valorStr.replace(".", "").replace(",", ".");
 
         return new BigDecimal(valorStr);
     }
 
-    // Criar ou salvar comprovante
     public ComprovantePix save(ComprovantePix comprovantePix) {
         comprovantePix.setDataEnvio(LocalDateTime.now());
         return comprovantePixRepository.save(comprovantePix);
     }
 
-    // Listar todos
     public List<ComprovantePix> findAll() {
         return comprovantePixRepository.findAll();
     }
 
-    // Buscar por ID
     public Optional<ComprovantePix> findById(Long id) {
         return comprovantePixRepository.findById(id);
     }
 
-    // Buscar por TXID
     public Optional<ComprovantePix> findByTxId(String txId) {
         return comprovantePixRepository.findByTxId(txId);
     }
 
-    // Atualizar comprovante
     public Optional<ComprovantePix> update(Long id, ComprovantePix dadosAtualizados) {
         return comprovantePixRepository.findById(id).map(existente -> {
             existente.setValor(dadosAtualizados.getValor());
@@ -70,7 +64,6 @@ public class ComprovantePixService {
         });
     }
 
-    // Deletar comprovante por ID
     public boolean deleteById(Long id) {
         if (comprovantePixRepository.existsById(id)) {
             comprovantePixRepository.deleteById(id);
@@ -79,7 +72,6 @@ public class ComprovantePixService {
         return false;
     }
 
-    // Validação
     public Map<String, Object> validar(Map<String, String> dadosOcr) {
 
         String txid = dadosOcr.get("txId");
@@ -103,6 +95,31 @@ public class ComprovantePixService {
 
         boolean tudoOK = pagadorOK && recebedorOK && valorOK && dataOK;
 
+        
+        if (pagadorOK == false) {
+            return Map.of(
+                    "valido", false,
+                    "motivo", "Nome do Pagador não condiz com a Transação Original.");
+        }
+
+        if (recebedorOK == false) {
+            return Map.of(
+                    "valido", false,
+                    "motivo", "Nome do Recebedor não condiz com a Transação Original.");
+        }
+
+        if (valorOK == false) {
+            return Map.of(
+                    "valido", false,
+                    "motivo", "Valor não condiz com a Transação Original.");
+        }
+
+        if (dataOK == false) {
+            return Map.of(
+                    "valido", false,
+                    "motivo", "Data não condiz com a Transação Original.");
+        }
+
         return Map.of(
                 "valido", tudoOK,
                 "campos", Map.of(
@@ -111,6 +128,7 @@ public class ComprovantePixService {
                         "valor", valorOK,
                         "dataHora", dataOK));
     }
+
 
     private boolean comparar(String a, String b) {
         return a != null && b != null && a.equalsIgnoreCase(b);

@@ -43,18 +43,15 @@ public class DataHoraUtils {
         if (dataHoraBr == null)
             return null;
 
-        // Remove "às", "as", variações
         String normalizado = dataHoraBr.replaceAll("(?i)às|as|às", "").trim();
 
-        // Normaliza múltiplos espaços para apenas um
         normalizado = normalizado.replaceAll("\\s+", " ");
 
-        // Agora o texto sempre terá um único espaço entre data e hora
         DateTimeFormatter formatoBr = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
         LocalDateTime dt = LocalDateTime.parse(normalizado, formatoBr);
 
-        return dt.toString(); // ISO 8601
+        return dt.toString(); 
     }
 
     public static LocalDateTime parseDataHora(String raw) {
@@ -64,7 +61,6 @@ public class DataHoraUtils {
 
         String t = raw.trim().toUpperCase();
 
-        // 🔥 Se for ISO, não mexe! Retorna na hora
         if (t.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*")) {
             try {
                 return OffsetDateTime.parse(t).toLocalDateTime();
@@ -73,11 +69,9 @@ public class DataHoraUtils {
             }
         }
 
-        // 🔧 Agora sim pode normalizar para os formatos BR
         t = t.replace(" - ", " ")
                 .replaceAll("\\s+", " ");
 
-        // 🔥 Converte meses PT-BR (JAN, FEV, OUT etc.)
         for (var entry : MESES.entrySet()) {
             String m = entry.getKey();
             if (t.contains(" " + m + " ")) {
@@ -85,7 +79,6 @@ public class DataHoraUtils {
             }
         }
 
-        // Tenta formatadores
         for (DateTimeFormatter f : FORMATTERS) {
             try {
                 return LocalDateTime.parse(t, f);

@@ -18,11 +18,9 @@ public class BancoDetectorService {
 
     public BancoDetectorService() {
         this.parsers = List.of(
-            new ItauParser(),
-            new NubankParser(),
-            new BradescoParser()
-            // Adicione mais bancos conforme necessário
-        );
+                new ItauParser(),
+                new NubankParser(),
+                new BradescoParser());
     }
 
     public Map<String, String> processarComprovante(String textoOCR) {

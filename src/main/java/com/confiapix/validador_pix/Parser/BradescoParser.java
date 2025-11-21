@@ -16,12 +16,11 @@ public class BradescoParser implements ComprovanteParser {
     public Map<String, String> extrairCampos(String textoOCR) {
         Map<String, String> dados = new HashMap<>();
 
-        // Regex para capturar os campos principais
         Pattern valorPattern = Pattern.compile("Valor[:\\s]*R?\\$?\\s*([\\d.,]+)", Pattern.CASE_INSENSITIVE);
         Pattern dataHoraPattern = Pattern.compile("(\\d{2}/\\d{2}/\\d{4})\\s*-\\s*(\\d{2}:\\d{2}:\\d{2})", Pattern.CASE_INSENSITIVE);
-        Pattern nomeRecebedorPattern = Pattern.compile("Dados de quem recebeu.*?Nome\\s*\\n([A-ZÀ-Ú\\s]+)(?=\\nCPF)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-        Pattern nomePagadorPattern = Pattern.compile("Dados de quem fez a transação.*?Nome\\s*\\n([A-ZÀ-Ú\\s]+)(?=\\nCPF)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-        Pattern txIdPattern = Pattern.compile("Número de Controle\\s*([A-Z0-9]+)", Pattern.CASE_INSENSITIVE);
+        Pattern nomeRecebedorPattern = Pattern.compile("(?i)Dados de quem recebeu\\s*\\nNome\\s*\\n([^\\n]+)", Pattern.CASE_INSENSITIVE );
+        Pattern nomePagadorPattern = Pattern.compile("(?i)Dados de quem fez a transação.*?Nome\\s*\\n([A-ZÀ-Ú\\s]+)(?=\\nCPF)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+        Pattern txIdPattern = Pattern.compile("(?i)Número de Controle\\s*([A-Z0-9]+)", Pattern.CASE_INSENSITIVE);
 
         Matcher mValor = valorPattern.matcher(textoOCR);
         Matcher mDataHora = dataHoraPattern.matcher(textoOCR);

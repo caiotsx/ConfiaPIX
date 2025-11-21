@@ -23,7 +23,6 @@ public class OcrService {
 
         ClassPathResource tessData = new ClassPathResource("tessdata");
         tesseract.setDatapath(tessData.getFile().getAbsolutePath());
-
         tesseract.setLanguage("por");
 
         try {
@@ -33,7 +32,6 @@ public class OcrService {
         }
     }
 
-    // 🆕 Novo método: OCR de PDF
     public String extrairTextoDePdf(File pdfFile) {
         StringBuilder texto = new StringBuilder();
         try (PDDocument document = PDDocument.load(pdfFile)) {

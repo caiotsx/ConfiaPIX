@@ -23,11 +23,9 @@ public class ItauParser implements ComprovanteParser {
         dados.put("nomeRecebedor", extrairRegex(textoOCR, "(?i)Para\\s*\\n([A-ZÀ-Ú\\s]+)(?=\\nCPF)"));
         dados.put("valor", extrairRegex(textoOCR, "(?i)R\\$\\s*([\\d.,]+)"));
 
-        // Regex único para data + hora
         String dataHoraBr = extrairRegex(
-            textoOCR,
-            "(?i)realizado\\s*em\\s*(\\d{2}/\\d{2}/\\d{4}\\s*[àas]*\\s*\\d{2}:\\d{2}:\\d{2})"
-        );
+                textoOCR,
+                "(?i)realizado\\s*em\\s*(\\d{2}/\\d{2}/\\d{4}\\s*[àas]*\\s*\\d{2}:\\d{2}:\\d{2})");
 
         dados.put("dataHora", DataHoraUtils.converterParaISO(dataHoraBr));
 
@@ -35,7 +33,6 @@ public class ItauParser implements ComprovanteParser {
 
         return dados;
     }
-
 
     private String extrairRegex(String texto, String regex) {
         Pattern pattern = Pattern.compile(regex);
