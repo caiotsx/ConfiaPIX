@@ -1,9 +1,12 @@
 package com.confiapix.validador_pix.Parser;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.confiapix.validador_pix.Utils.DataHoraUtils;
 
 public class BradescoParser implements ComprovanteParser {
 
@@ -16,25 +19,28 @@ public class BradescoParser implements ComprovanteParser {
     public Map<String, String> extrairCampos(String textoOCR) {
         Map<String, String> dados = new HashMap<>();
 
-        Pattern valorPattern = Pattern.compile("Valor[:\\s]*R?\\$?\\s*([\\d.,]+)", Pattern.CASE_INSENSITIVE);
-        Pattern dataHoraPattern = Pattern.compile("(\\d{2}/\\d{2}/\\d{4})\\s*-\\s*(\\d{2}:\\d{2}:\\d{2})", Pattern.CASE_INSENSITIVE);
-        Pattern nomeRecebedorPattern = Pattern.compile("(?i)Dados de quem recebeu\\s*\\nNome\\s*\\n([^\\n]+)", Pattern.CASE_INSENSITIVE );
-        Pattern nomePagadorPattern = Pattern.compile("(?i)Dados de quem fez a transação.*?Nome\\s*\\n([A-ZÀ-Ú\\s]+)(?=\\nCPF)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-        Pattern txIdPattern = Pattern.compile("(?i)Número de Controle\\s*([A-Z0-9]+)", Pattern.CASE_INSENSITIVE);
+        dados.put("txId", extrairRegex(textoOCR, "(?i)Número de Controle\\s*([A-Z0-9]+)"));
+        dados.put("nomePagador", extrairRegex(textoOCR, "(?i)Dados de quem fez a transação.*?Nome\\s*\\n([A-ZÀ-Ú\\s]+)(?=\\nCPF)"
+));
+        dados.put("nomeRecebedor", extrairRegex(textoOCR, "(?i)Dados de quem recebeu\\s*\\nNome\\s*\\n([^\\n]+)"));
+        dados.put("valor", extrairRegex(textoOCR, "Valor[:\\s]*R?\\$?\\s*([\\d.,]+)"));
 
-        Matcher mValor = valorPattern.matcher(textoOCR);
-        Matcher mDataHora = dataHoraPattern.matcher(textoOCR);
-        Matcher mNomeRecebedor = nomeRecebedorPattern.matcher(textoOCR);
-        Matcher mNomePagador = nomePagadorPattern.matcher(textoOCR);
-        Matcher mTxId = txIdPattern.matcher(textoOCR);
-
-        if (mValor.find()) dados.put("valor", mValor.group(1).trim());
-        if (mDataHora.find()) dados.put("dataHora", mDataHora.group(1) + " " + mDataHora.group(2));
-        if (mNomeRecebedor.find()) dados.put("nomeRecebedor", mNomeRecebedor.group(1).trim());
-        if (mNomePagador.find()) dados.put("nomePagador", mNomePagador.group(1).trim());
-        if (mTxId.find()) dados.put("txId", mTxId.group(1).trim());
+        String dataHoraStr = extrairRegex(textoOCR,
+                "(\\d{2}/\\d{2}/\\d{4})\\s*-\\s*(\\d{2}:\\d{2}:\\d{2})"
+);
+        LocalDateTime dataHora = DataHoraUtils.parseDataHora(dataHoraStr);
+        dados.put("dataHora", dataHora != null ? dataHora.toString() : dataHoraStr);
 
         dados.put("banco", "Bradesco");
         return dados;
+    }
+
+    private String extrairRegex(String texto, String padrao) {
+        Pattern pattern = Pattern.compile(padrao);
+        Matcher matcher = pattern.matcher(texto);
+        if (matcher.find()) {
+            return matcher.group(1).trim();
+        }
+        return null;
     }
 }
