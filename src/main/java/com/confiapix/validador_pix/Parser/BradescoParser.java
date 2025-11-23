@@ -26,7 +26,7 @@ public class BradescoParser implements ComprovanteParser {
         dados.put("valor", extrairRegex(textoOCR, "Valor[:\\s]*R?\\$?\\s*([\\d.,]+)"));
 
         String dataHoraStr = extrairRegex(textoOCR,
-                "(\\d{2}/\\d{2}/\\d{4})\\s*-\\s*(\\d{2}:\\d{2}:\\d{2})"
+               "(\\d{2}/\\d{2}/\\d{4} - \\d{2}:\\d{2}:\\d{2})"
 );
         LocalDateTime dataHora = DataHoraUtils.parseDataHora(dataHoraStr);
         dados.put("dataHora", dataHora != null ? dataHora.toString() : dataHoraStr);

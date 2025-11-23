@@ -1,6 +1,7 @@
 package com.confiapix.validador_pix.Utils;
 
 import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -51,10 +52,15 @@ public class DataHoraUtils {
 
         LocalDateTime dt = LocalDateTime.parse(normalizado, formatoBr);
 
-        return dt.toString(); 
+        return dt.toString();
     }
 
     public static LocalDateTime parseDataHora(String raw) {
+
+        if (raw.matches("\\d{2}/\\d{2}/\\d{4}")) {
+            return LocalDate.parse(raw, DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                    .atStartOfDay();
+        }
 
         if (raw == null || raw.isBlank())
             return null;
