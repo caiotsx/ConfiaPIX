@@ -42,7 +42,7 @@ public class OcrService {
         try (PDDocument document = PDDocument.load(pdfFile)) {
             PDFRenderer pdfRenderer = new PDFRenderer(document);
             Tesseract tesseract = new Tesseract();
-            tesseract.setLanguage("por+eng");
+            tesseract.setLanguage("por");
 
             int totalPages = document.getNumberOfPages();
             for (int i = 0; i < totalPages; i++) {
