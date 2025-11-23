@@ -51,7 +51,7 @@ public class ComprovantePixController {
         return ResponseEntity.ok(salvo);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/atualizar/{id}")
     public ResponseEntity<ComprovantePix> atualizarComprovante(
             @PathVariable Long id,
             @RequestBody ComprovantePix comprovanteAtualizado) {
@@ -61,7 +61,7 @@ public class ComprovantePixController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deletar/{id}")
     public ResponseEntity<Void> deletarComprovante(@PathVariable Long id) {
         boolean deletado = comprovantePixService.deleteById(id);
         if (deletado) {
