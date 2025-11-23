@@ -22,7 +22,8 @@ public class BradescoParser implements ComprovanteParser {
         dados.put("txId", extrairRegex(textoOCR, "(?i)Número de Controle\\s*([A-Z0-9]+)"));
         dados.put("nomePagador", extrairRegex(textoOCR, "(?i)Dados de quem fez a transação.*?Nome\\s*\\n([A-ZÀ-Ú\\s]+)(?=\\nCPF)"
 ));
-        dados.put("nomeRecebedor", extrairRegex(textoOCR, "(?i)Dados de quem recebeu\\s*\\nNome\\s*\\n([^\\n]+)"));
+        dados.put("nomeRecebedor", extrairRegex(textoOCR, "(?i)Dados de quem recebeu\\s*\\nNome\\s*\\n([^\\n]+)(?=\\\\n" + //
+                        "CPF)\""));
         dados.put("valor", extrairRegex(textoOCR, "Valor[:\\s]*R?\\$?\\s*([\\d.,]+)"));
 
         String dataHoraStr = extrairRegex(textoOCR,
