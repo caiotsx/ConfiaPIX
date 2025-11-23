@@ -23,6 +23,7 @@ public class OcrService {
         this.tesseract = new Tesseract();
 
         String tessData = System.getenv("TESSDATA_PREFIX");
+        tesseract.setLanguage("por");
 
         if (tessData == null || tessData.isBlank()) {
             tessData = "/usr/share/tesseract-ocr/4.00/tessdata/";
