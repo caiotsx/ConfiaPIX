@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 
-
 @Service
 public class OcrService {
 
@@ -42,8 +41,16 @@ public class OcrService {
         StringBuilder texto = new StringBuilder();
         try (PDDocument document = PDDocument.load(pdfFile)) {
             PDFRenderer pdfRenderer = new PDFRenderer(document);
-            Tesseract tesseract = new Tesseract();
+            this.tesseract = new Tesseract();
+
+            String tessData = System.getenv("TESSDATA_PREFIX");
             tesseract.setLanguage("por");
+
+            if (tessData == null || tessData.isBlank()) {
+                tessData = "/usr/share/tesseract-ocr/4.00/tessdata/";
+            }
+
+            tesseract.setDatapath(tessData);
 
             int totalPages = document.getNumberOfPages();
             for (int i = 0; i < totalPages; i++) {

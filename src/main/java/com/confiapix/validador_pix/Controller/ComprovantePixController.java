@@ -92,7 +92,7 @@ public class ComprovantePixController {
                     return ResponseEntity.badRequest()
                             .body("Não foi possível ler a imagem. Verifique se o arquivo está corrompido.");
                 }
-
+                
                 textoExtraido = ocrService.extrairTexto(tempFile);
             } else {
                 return ResponseEntity.badRequest().body("Formato não suportado. Envie uma imagem (JPG/PNG) ou PDF.");
