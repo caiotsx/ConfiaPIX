@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,7 @@ public class OcrService {
 
             int totalPages = document.getNumberOfPages();
             for (int i = 0; i < totalPages; i++) {
-                BufferedImage image = pdfRenderer.renderImageWithDPI(i, 300);
+                BufferedImage image = pdfRenderer.renderImageWithDPI(i, 150, ImageType.BINARY);
                 texto.append(tesseract.doOCR(image)).append("\n");
             }
         } catch (IOException | TesseractException e) {
