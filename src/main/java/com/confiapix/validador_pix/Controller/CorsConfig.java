@@ -10,10 +10,11 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns(
+                .allowedOrigins(
                         "https://confiapix-frontend.onrender.com",
                         "http://localhost:3000",
-                        "http://localhost:8080")
+                        "http://localhost:8080"
+                )
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true);
